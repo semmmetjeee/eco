@@ -33,7 +33,12 @@ public final class EcoPlugin extends JavaPlugin {
     }
 
     private void registerEconomyCommand() {
-        if (economyCommand != null) economyCommand.unregister(Bukkit.getCommandMap());
+        if (economyCommand != null) {
+            economyCommand.unregister(Bukkit.getCommandMap());
+            economyCommand = null;
+        }
+        if (!getConfig().getBoolean("custom-commands-enabled", true)) return;
+
         String name = getConfig().getString("command", "economy").toLowerCase();
         String aliasesValue = getConfig().getString("aliases", "eco");
         economyCommand = new EcoCommand(this, balances, name, aliasesValue.isBlank() ? java.util.List.of() : java.util.Arrays.stream(aliasesValue.split(",")).map(String::trim).filter(s -> !s.isEmpty()).toList());
