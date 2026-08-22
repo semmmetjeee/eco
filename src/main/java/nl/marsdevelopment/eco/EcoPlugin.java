@@ -41,7 +41,7 @@ public final class EcoPlugin extends JavaPlugin {
     }
 
     String format(double amount) {
-        DecimalFormat formatter = new DecimalFormat("#,##0.00", DecimalFormatSymbols.getInstance(Locale.US));
+        DecimalFormat formatter = new DecimalFormat("#,##0.##", DecimalFormatSymbols.getInstance(Locale.US));
         return getConfig().getString("symbol", "$") + formatter.format(amount);
     }
     String message(String key) { return org.bukkit.ChatColor.translateAlternateColorCodes('&', getConfig().getString("messages." + key, "&cMissing message: " + key)); }
