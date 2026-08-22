@@ -3,16 +3,15 @@ package nl.marsdevelopment.eco;
 import net.milkbowl.vault.economy.AbstractEconomy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.plugin.Plugin;
 
 public final class EcoEconomy extends AbstractEconomy {
-    private final Plugin plugin; private final BalanceStore balances;
-    EcoEconomy(Plugin plugin, BalanceStore balances) { this.plugin = plugin; this.balances = balances; }
+    private final EcoPlugin plugin; private final BalanceStore balances;
+    EcoEconomy(EcoPlugin plugin, BalanceStore balances) { this.plugin = plugin; this.balances = balances; }
     @Override public boolean isEnabled() { return plugin.isEnabled(); }
     @Override public String getName() { return "Eco"; }
     @Override public boolean hasBankSupport() { return false; }
     @Override public int fractionalDigits() { return 2; }
-    @Override public String format(double amount) { return String.format("%.2f", amount); }
+    @Override public String format(double amount) { return plugin.format(amount); }
     @Override public String currencyNamePlural() { return "coins"; }
     @Override public String currencyNameSingular() { return "coin"; }
     @Override public boolean hasAccount(OfflinePlayer player) { return true; }
