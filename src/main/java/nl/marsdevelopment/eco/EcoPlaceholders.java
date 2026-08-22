@@ -20,7 +20,6 @@ public final class EcoPlaceholders extends PlaceholderExpansion {
         if (player == null) return "";
         double balance = balances.get(player.getUniqueId());
         return switch (params.toLowerCase()) {
-            case "balance" -> Double.toString(balance);
             case "balance_fixed" -> plugin.fixed(balance);
             case "balance_commas" -> plugin.commas(balance);
             case "balance_formatted" -> plugin.format(balance);
