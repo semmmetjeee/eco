@@ -4,6 +4,8 @@
 # %eco_balance_formatted% -> $1,000,000
 #
 # The command is registered dynamically. Change this and run /ecoreload.
+# Set to false to disable the configured command and aliases; /ecoreload remains available.
+custom-commands-enabled: true
 command: "economy"
 # Separate multiple aliases with commas.
 aliases: "eco"
