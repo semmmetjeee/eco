@@ -40,10 +40,11 @@ public final class EcoPlugin extends JavaPlugin {
         Bukkit.getCommandMap().register(getDescription().getName().toLowerCase(), economyCommand);
     }
 
-    String format(double amount) {
-        DecimalFormat formatter = new DecimalFormat("#,##0.##", DecimalFormatSymbols.getInstance(Locale.US));
-        return getConfig().getString("symbol", "$") + formatter.format(amount);
-    }
+    String format(double amount) { return getConfig().getString("symbol", "$") + commas(amount); }
+    String commas(double amount) { return decimal("#,##0.##").format(amount); }
+    String fixed(double amount) { return decimal("0.00").format(amount); }
+    private DecimalFormat decimal(String pattern) { return new DecimalFormat(pattern, DecimalFormatSymbols.getInstance(Locale.US)); }
+
     String message(String key) { return org.bukkit.ChatColor.translateAlternateColorCodes('&', getConfig().getString("messages." + key, "&cMissing message: " + key)); }
     @Override public void onDisable() {
         if (economyCommand != null) economyCommand.unregister(Bukkit.getCommandMap());
