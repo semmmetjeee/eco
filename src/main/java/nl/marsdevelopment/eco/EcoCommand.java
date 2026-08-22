@@ -2,31 +2,60 @@ package nl.marsdevelopment.eco;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.*;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import java.util.*;
 
-final class EcoCommand implements CommandExecutor, TabCompleter {
+final class EcoCommand extends Command {
+    private final EcoPlugin plugin;
     private final BalanceStore balances;
-    EcoCommand(BalanceStore balances) { this.balances = balances; }
-    @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length == 0 || args[0].equalsIgnoreCase("balance")) {
-            if (!sender.hasPermission("eco.balance")) { sender.sendMessage("§cNo permission."); return true; }
-            OfflinePlayer target = args.length > 1 ? Bukkit.getOfflinePlayer(args[1]) : sender instanceof OfflinePlayer p ? p : null;
-            if (target == null) { sender.sendMessage("§cUsage: /eco balance <player>"); return true; }
-            sender.sendMessage("§a" + target.getName() + " has §e" + String.format("%.2f", balances.get(target.getUniqueId())) + "§a coins."); return true;
-        }
-        if (!sender.hasPermission("eco.admin")) { sender.sendMessage("§cNo permission."); return true; }
-        if (args.length != 3 || !Set.of("give", "set", "take").contains(args[0].toLowerCase(Locale.ROOT))) { sender.sendMessage("§cUsage: /eco <give|set|take> <player> <amount>"); return true; }
-        double amount; try { amount = Double.parseDouble(args[2]); } catch (NumberFormatException e) { sender.sendMessage("§cAmount must be a number."); return true; }
-        if (amount < 0 || !Double.isFinite(amount)) { sender.sendMessage("§cAmount must be positive and finite."); return true; }
-        OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]); double before = balances.get(target.getUniqueId());
-        double after = switch (args[0].toLowerCase(Locale.ROOT)) { case "give" -> before + amount; case "take" -> Math.max(0, before - amount); default -> amount; };
-        balances.set(target.getUniqueId(), after); balances.save(); sender.sendMessage("§aSet " + target.getName() + "'s balance to §e" + String.format("%.2f", after) + "§a coins."); return true;
+
+    EcoCommand(EcoPlugin plugin, BalanceStore balances, String name, List<String> aliases) {
+        super(name, "Manage player balances.", "/" + name + " [balance|give|set|take|reset] [player] [amount]", aliases);
+        this.plugin = plugin; this.balances = balances;
     }
-    @Override public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (args.length == 1) return prefix(args[0], List.of("balance", "give", "set", "take"));
-        if (args.length == 2) return Bukkit.getOnlinePlayers().stream().map(p -> p.getName()).filter(n -> n.toLowerCase().startsWith(args[1].toLowerCase())).toList();
+
+    @Override public boolean execute(CommandSender sender, String label, String[] args) {
+        if (args.length == 0 || args[0].equalsIgnoreCase("balance")) {
+            if (!sender.hasPermission("eco.balance")) { sender.sendMessage(plugin.message("no-permission")); return true; }
+            OfflinePlayer target = args.length > 1 ? Bukkit.getOfflinePlayer(args[1]) : sender instanceof OfflinePlayer p ? p : null;
+            if (target == null) { sender.sendMessage(plugin.message("usage")); return true; }
+            sender.sendMessage(format("balance", target, balances.get(target.getUniqueId())));
+            return true;
+        }
+        if (!sender.hasPermission("eco.admin")) { sender.sendMessage(plugin.message("no-permission")); return true; }
+        if (args.length < 2 || !Set.of("give", "set", "take", "reset").contains(args[0].toLowerCase(Locale.ROOT))) { sender.sendMessage(plugin.message("usage")); return true; }
+
+        String action = args[0].toLowerCase(Locale.ROOT);
+        OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
+        double amount = 0;
+        if (!action.equals("reset")) {
+            if (args.length != 3) { sender.sendMessage(plugin.message("usage")); return true; }
+            try { amount = Double.parseDouble(args[2]); } catch (NumberFormatException e) { sender.sendMessage(plugin.message("invalid-amount")); return true; }
+            if (amount < 0 || !Double.isFinite(amount)) { sender.sendMessage(plugin.message("invalid-amount")); return true; }
+        }
+        double before = balances.get(target.getUniqueId());
+        double after = switch (action) {
+            case "give" -> before + amount;
+            case "take" -> Math.max(0, before - amount);
+            case "set" -> amount;
+            default -> 0;
+        };
+        balances.set(target.getUniqueId(), after);
+        balances.save();
+        sender.sendMessage(format("admin-" + action, target, amount));
+        if (target.isOnline()) target.getPlayer().sendMessage(format("player-" + action, target, amount));
+        return true;
+    }
+
+    @Override public List<String> tabComplete(CommandSender sender, String alias, String[] args, org.bukkit.Location location) {
+        if (args.length == 1) return prefix(args[0], List.of("balance", "give", "set", "take", "reset"));
+        if (args.length == 2) return Bukkit.getOnlinePlayers().stream().map(player -> player.getName()).filter(name -> name.toLowerCase().startsWith(args[1].toLowerCase())).toList();
         return List.of();
     }
-    private List<String> prefix(String value, List<String> choices) { return choices.stream().filter(s -> s.startsWith(value.toLowerCase())).toList(); }
+
+    private String format(String message, OfflinePlayer player, double amount) {
+        return plugin.message(message).replace("{player}", player.getName() == null ? "Unknown" : player.getName()).replace("{amount}", String.format(Locale.US, "%.2f", amount)).replace("{balance}", String.format(Locale.US, "%.2f", balances.get(player.getUniqueId())));
+    }
+    private List<String> prefix(String input, List<String> values) { return values.stream().filter(value -> value.startsWith(input.toLowerCase())).toList(); }
 }
