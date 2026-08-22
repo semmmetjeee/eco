@@ -1,3 +1,8 @@
+# Placeholders (requires PlaceholderAPI):
+# %eco_balance_fixed%     -> 1000000.00
+# %eco_balance_commas%    -> 1,000,000
+# %eco_balance_formatted% -> $1,000,000
+#
 # The command is registered dynamically. Change this and run /ecoreload.
 command: "economy"
 # Separate multiple aliases with commas.
