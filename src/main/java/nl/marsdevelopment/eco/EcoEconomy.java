@@ -32,4 +32,6 @@ public final class EcoEconomy extends AbstractEconomy {
     }
     @Override public boolean createPlayerAccount(OfflinePlayer player) { return true; }
     @Override public boolean createPlayerAccount(OfflinePlayer player, String world) { return true; }
+    @Override public boolean createPlayerAccount(String playerName) { return true; }
+    @Override public boolean createPlayerAccount(String playerName, String worldName) { return true; }
 }
