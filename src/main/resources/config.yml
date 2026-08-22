@@ -1,0 +1,21 @@
+# The command is registered dynamically. Change this and run /ecoreload.
+command: "economy"
+# Separate multiple aliases with commas.
+aliases: "eco"
+
+messages:
+  no-permission: "&cYou do not have permission to do that."
+  usage: "&cUsage: /{command} <balance|give|set|take|reset> [player] [amount]"
+  invalid-amount: "&cAmount must be a positive number."
+  reload: "&aEco configuration reloaded."
+  balance: "&a{player}'s balance: &e{balance}"
+
+  admin-give: "&aGave &e{amount} &ato &e{player}&a. New balance: &e{balance}"
+  admin-set: "&aSet &e{player}&a's balance to &e{balance}"
+  admin-take: "&aTook &e{amount} &afrom &e{player}&a. New balance: &e{balance}"
+  admin-reset: "&aReset &e{player}&a's balance."
+
+  player-give: "&aYou received &e{amount}&a. Your balance is now &e{balance}"
+  player-set: "&aYour balance was set to &e{balance}"
+  player-take: "&c{amount} was taken from your balance. New balance: &e{balance}"
+  player-reset: "&cYour balance has been reset."
