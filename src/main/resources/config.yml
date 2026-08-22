@@ -3,7 +3,7 @@ command: "economy"
 # Separate multiple aliases with commas.
 aliases: "eco"
 
-# Appears before every formatted balance, e.g. $1,000,000.00
+# Appears before every formatted balance, e.g. $1,000,000
 symbol: "$"
 
 messages:
