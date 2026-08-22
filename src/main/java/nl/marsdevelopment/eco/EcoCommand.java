@@ -19,18 +19,18 @@ final class EcoCommand extends Command {
         if (args.length == 0 || args[0].equalsIgnoreCase("balance")) {
             if (!sender.hasPermission("eco.balance")) { sender.sendMessage(plugin.message("no-permission")); return true; }
             OfflinePlayer target = args.length > 1 ? Bukkit.getOfflinePlayer(args[1]) : sender instanceof OfflinePlayer p ? p : null;
-            if (target == null) { sender.sendMessage(plugin.message("usage")); return true; }
+            if (target == null) { sender.sendMessage(usage(label)); return true; }
             sender.sendMessage(format("balance", target, balances.get(target.getUniqueId())));
             return true;
         }
         if (!sender.hasPermission("eco.admin")) { sender.sendMessage(plugin.message("no-permission")); return true; }
-        if (args.length < 2 || !Set.of("give", "set", "take", "reset").contains(args[0].toLowerCase(Locale.ROOT))) { sender.sendMessage(plugin.message("usage")); return true; }
+        if (args.length < 2 || !Set.of("give", "set", "take", "reset").contains(args[0].toLowerCase(Locale.ROOT))) { sender.sendMessage(usage(label)); return true; }
 
         String action = args[0].toLowerCase(Locale.ROOT);
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
         double amount = 0;
         if (!action.equals("reset")) {
-            if (args.length != 3) { sender.sendMessage(plugin.message("usage")); return true; }
+            if (args.length != 3) { sender.sendMessage(usage(label)); return true; }
             try { amount = Double.parseDouble(args[2]); } catch (NumberFormatException e) { sender.sendMessage(plugin.message("invalid-amount")); return true; }
             if (amount < 0 || !Double.isFinite(amount)) { sender.sendMessage(plugin.message("invalid-amount")); return true; }
         }
@@ -54,6 +54,7 @@ final class EcoCommand extends Command {
         return List.of();
     }
 
+    private String usage(String label) { return plugin.message("usage").replace("{command}", label); }
     private String format(String message, OfflinePlayer player, double amount) {
         return plugin.message(message).replace("{player}", player.getName() == null ? "Unknown" : player.getName()).replace("{amount}", String.format(Locale.US, "%.2f", amount)).replace("{balance}", String.format(Locale.US, "%.2f", balances.get(player.getUniqueId())));
     }
