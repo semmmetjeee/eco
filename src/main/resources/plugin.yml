@@ -1,15 +1,14 @@
 name: Eco
-version: 1.0.0
+version: 1.1.0
 main: nl.marsdevelopment.eco.EcoPlugin
 api-version: '1.21'
 author: Mars Development
 description: Adds Eco support
 softdepend: [Vault]
 commands:
-  eco:
-    aliases: [economy]
-    description: Manage player balances.
-    usage: /<command> [balance|give|set|take] [player] [amount]
+  ecoreload:
+    description: Reload the Eco configuration.
+    usage: /ecoreload
 permissions:
   eco.balance:
     default: true
