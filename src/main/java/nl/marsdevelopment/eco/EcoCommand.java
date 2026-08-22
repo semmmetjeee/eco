@@ -56,7 +56,7 @@ final class EcoCommand extends Command {
 
     private String usage(String label) { return plugin.message("usage").replace("{command}", label); }
     private String format(String message, OfflinePlayer player, double amount) {
-        return plugin.message(message).replace("{player}", player.getName() == null ? "Unknown" : player.getName()).replace("{amount}", String.format(Locale.US, "%.2f", amount)).replace("{balance}", String.format(Locale.US, "%.2f", balances.get(player.getUniqueId())));
+        return plugin.message(message).replace("{player}", player.getName() == null ? "Unknown" : player.getName()).replace("{amount}", plugin.format(amount)).replace("{balance}", plugin.format(balances.get(player.getUniqueId())));
     }
     private List<String> prefix(String input, List<String> values) { return values.stream().filter(value -> value.startsWith(input.toLowerCase())).toList(); }
 }
