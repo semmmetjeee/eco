@@ -3,6 +3,9 @@ command: "economy"
 # Separate multiple aliases with commas.
 aliases: "eco"
 
+# Appears before every formatted balance, e.g. $1,000,000.00
+symbol: "$"
+
 messages:
   no-permission: "&cYou do not have permission to do that."
   usage: "&cUsage: /{command} <balance|give|set|take|reset> [player] [amount]"
