@@ -17,6 +17,29 @@ public final class EcoEconomy extends AbstractEconomy {
     @Override public String format(double amount) { return plugin.format(amount); }
     @Override public String currencyNamePlural() { return "coins"; }
     @Override public String currencyNameSingular() { return "coin"; }
+
+    @Override public boolean hasAccount(String playerName) { return true; }
+    @Override public boolean hasAccount(String playerName, String worldName) { return true; }
+    @Override public double getBalance(String playerName) { return getBalance(org.bukkit.Bukkit.getOfflinePlayer(playerName)); }
+    @Override public double getBalance(String playerName, String worldName) { return getBalance(playerName); }
+    @Override public boolean has(String playerName, double amount) { return getBalance(playerName) >= amount; }
+    @Override public boolean has(String playerName, String worldName, double amount) { return has(playerName, amount); }
+    @Override public EconomyResponse withdrawPlayer(String playerName, double amount) { return withdrawPlayer(org.bukkit.Bukkit.getOfflinePlayer(playerName), amount); }
+    @Override public EconomyResponse withdrawPlayer(String playerName, String worldName, double amount) { return withdrawPlayer(playerName, amount); }
+    @Override public EconomyResponse depositPlayer(String playerName, double amount) { return depositPlayer(org.bukkit.Bukkit.getOfflinePlayer(playerName), amount); }
+    @Override public EconomyResponse depositPlayer(String playerName, String worldName, double amount) { return depositPlayer(playerName, amount); }
+
+    @Override public EconomyResponse createBank(String name, String player) { return bankUnsupported(); }
+    @Override public EconomyResponse deleteBank(String name) { return bankUnsupported(); }
+    @Override public EconomyResponse bankBalance(String name) { return bankUnsupported(); }
+    @Override public EconomyResponse bankHas(String name, double amount) { return bankUnsupported(); }
+    @Override public EconomyResponse bankWithdraw(String name, double amount) { return bankUnsupported(); }
+    @Override public EconomyResponse bankDeposit(String name, double amount) { return bankUnsupported(); }
+    @Override public EconomyResponse isBankOwner(String name, String playerName) { return bankUnsupported(); }
+    @Override public EconomyResponse isBankMember(String name, String playerName) { return bankUnsupported(); }
+    private EconomyResponse bankUnsupported() {
+        return new EconomyResponse(0, 0, EconomyResponse.ResponseType.NOT_IMPLEMENTED, "Banks are not supported");
+    }
     @Override public boolean hasAccount(OfflinePlayer player) { return true; }
     @Override public boolean hasAccount(OfflinePlayer player, String world) { return true; }
     @Override public double getBalance(OfflinePlayer player) { return balances.get(player.getUniqueId()); }
